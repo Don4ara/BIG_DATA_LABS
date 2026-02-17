@@ -4,15 +4,15 @@ services:
     build: .
     container_name: postgres_logs_db
     environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: root
-      POSTGRES_DB: user_logs_db
-      SECRET_HASH: secret
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+      SECRET_HASH: ${SECRET_HASH}
     ports:
-      - "5432:5432"
+      - "${DB_PORT}:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
 
 volumes:
-  pgdata:    
-    name: volume_postgres
+  pgdata:
+    name: ${VOLUME_NAME}
