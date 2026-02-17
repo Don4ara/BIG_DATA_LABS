@@ -3,6 +3,12 @@ set -e
 
 # Выполняем SQL команды, используя psql
 psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
+    -- Создаем справочную таблицу кафедр
+    CREATE TABLE departments (
+        id INTEGER PRIMARY KEY,
+        name VARCHAR(255)
+    );
+
     -- Создаем таблицу для логов
     CREATE TABLE user_logs (
         courseid INTEGER,
@@ -20,7 +26,7 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
         s_a_submission_status_viewed_avg VARCHAR(255),
         NameR_Level VARCHAR(255),
         Name_vAtt VARCHAR(255),
-        Depart VARCHAR(255),
+        Depart INTEGER,
         Name_OsnO VARCHAR(255),
         Name_FormOPril VARCHAR(255),
         LevelEd VARCHAR(255),
@@ -29,7 +35,10 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
         Date_vAtt VARCHAR(255)
     );
 
-    -- Копируем данные из локального CSV файла (внутри контейнера) в созданную таблицу
+    -- Загружаем справочник кафедр
+    \copy departments FROM '/datasets/departments.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
+
+    -- Загружаем данные логов
     \copy user_logs FROM '/datasets/aggrigation_logs_per_week.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
 
 EOSQL
